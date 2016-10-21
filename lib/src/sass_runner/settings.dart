@@ -1,12 +1,24 @@
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
+//TODO: Add SasscSettings.
+
 class SassSettings {
   /// 'sass', 'sassc', or '/path/to/<executable>'
   String executable;
+
+  /// 'append' (.scss.css) or 'replace' (.css).
+  final String compiledCssExtension;
+
+  String get extension {
+    if (options.scss == null) return '.scss';
+    return options.scss ? '.scss' : '.sass';
+  }
+
   _Options options;
   SassSettings(
       {String executable,
+      this.compiledCssExtension: 'append',
       bool scss,
       String style,
       bool lineNumbers,
@@ -23,6 +35,14 @@ class SassSettings {
             loadPaths: loadPaths,
             sourcemap: sourcemap,
             precision: precision);
+
+  String outputFilePath(String inputFilePath) {
+    if (compiledCssExtension == 'append') {
+      return '${inputFilePath}.css';
+    } else {
+      return path.withoutExtension(inputFilePath) + '.css';
+    }
+  }
 }
 
 class _Options {

@@ -9,11 +9,13 @@ class SassRunner {
   SassRunner([SassSettings settings])
       : _settings = settings ?? new SassSettings();
 
-  Future<ProcessResult> run(String inputFilePath, String outputFilePath) {
+  Future<ProcessResult> run(String inputFilePath, [String outputFilePath]) {
+    String _outputFilePath =
+        outputFilePath ??= _settings.outputFilePath(inputFilePath);
     return Process.run(
         _settings.executable,
         _settings.options.toArguments()
           ..add(inputFilePath)
-          ..add(outputFilePath));
+          ..add(_outputFilePath));
   }
 }
